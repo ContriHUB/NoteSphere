@@ -3,7 +3,7 @@ import noteContext from "../context/notes/noteContext";
 import Noteitem from "./Noteitem";
 import AddNote from "./AddNote";
 import { useNavigate } from "react-router-dom";
-
+import imageCompression from "browser-image-compression";
 export default function Notes(props) {
   const context = useContext(noteContext);
   const { notes, getNotes,editNote } = context;
@@ -17,30 +17,135 @@ export default function Notes(props) {
     }
     
   }, []);
-  const [note,setnote] = useState({id:"",etitle:"",edescription:"",etag:"default"});
+  const [loading, setLoading] = useState(false); // Initialize loading state
+
+  const [note,setnote] = useState({id:"",etitle:"",edescription:"",etag:"default",eimage:null //added image field
+  });
   const buttonref = useRef(null);
   const refclose = useRef(null);
+  const confirmButtonRef = useRef(null); // For Confirmation Modal
+  const refCloseConfirm = useRef(null); // To close Confirmation Modal
   const updateNote = (currentNote) => {
-    buttonref.current.click();
-    setnote({id:currentNote._id,etitle:currentNote.title,edescription:currentNote.description,etag:currentNote.tag});
+    confirmButtonRef.current.click();
+    setnote({id:currentNote._id,etitle:currentNote.title,edescription:currentNote.description,etag:currentNote.tag,
+    eimage:null,//reset image field
+    });
     
   };
-  const handleClick = (e)=>{
-    console.log("updating note",note);
-    editNote(note.id,note.etitle,note.edescription,note.etag);
-    refclose.current.click();
-    props.showAlert("Updated Successfully","Success");
+  //updated handleclick function
+  const handleClick = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    console.log("updating note", note);
 
-    
-}
-const onChange = (e)=>{
-    setnote({...note,[e.target.name]: e.target.value})
-}
+    let compressedImage = note.eimage;
+    if (note.eimage) {
+      try {
+        compressedImage = await imageCompression(note.eimage, {
+          maxSizeMB: 1, // Maximum size in MB
+          maxWidthOrHeight: 1920, // Max width or height
+          useWebWorker: true,
+        });
+      } catch (error) {
+        console.error("Error compressing image:", error);
+        props.showAlert("Error compressing image.", "danger");
+        setLoading(false);
+        return;
+      }
+    }
+
+    try {
+      // Call editNote from context with compressed image
+      await editNote(
+        note.id,
+        note.etitle,
+        note.edescription,
+        note.etag,
+        compressedImage
+      );
+      props.showAlert("Note updated successfully!", "success");
+    } catch (error) {
+      props.showAlert(error.message, "danger");
+    }
+
+    setLoading(false);
+    refclose.current.click();
+  };
+  //updated onchange function
+  const onChange = (e) => {
+    if (e.target.name === "eimage") {
+      setnote({ ...note, [e.target.name]: e.target.files[0] });
+    } else {
+      setnote({ ...note, [e.target.name]: e.target.value });
+    }
+  };
 
   return (
     <>
       <AddNote showAlert={props.showAlert}/>
-
+      {/* Hidden button to trigger Confirmation Modal */}
+      <button
+        ref={confirmButtonRef}
+        type="button"
+        className="btn btn-secondary d-none"
+        data-toggle="modal"
+        data-target="#confirmModal"
+      >
+        Launch Confirmation Modal
+      </button>
+      {/* Confirmation Modal */}
+      <div
+        className="modal fade"
+        id="confirmModal"
+        tabIndex="-1"
+        aria-labelledby="confirmModalLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="confirmModalLabel">
+                Confirm Edit
+              </h5>
+              <button
+                type="button"
+                className="btn"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <i className="fa-solid fa-xmark-circle ">
+                </i>
+              </button>
+            </div>
+            <div className="modal-body">
+              Are you sure you want to edit this note?
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-secondary"
+                data-dismiss="modal"
+                ref={refCloseConfirm}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={() => {
+                  // Close Confirmation Modal
+                  refCloseConfirm.current.click();
+                  // Open Edit Note Modal
+                  buttonref.current.click();
+                }}
+              >
+                Yes, Edit
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* Hidden button to trigger Edit Note Modal */}
       <button
         ref={buttonref}
         type="button"
@@ -66,13 +171,16 @@ const onChange = (e)=>{
               </h5>
               <button
                 type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
+                className="btn"
+                data-dismiss="modal" //to close the modal
                 aria-label="Close"
-              ></button>
+              >
+                <i className="fa-solid fa-xmark-circle "> 
+                </i> {/*Cross icon */}
+              </button>
             </div>
-            <form className="my -3">
-              <div className="mb-3">
+            <form className="my -3 mx-2" enctype="multipart/form-data">{/*To handle file uploads */}
+              <div className="mb-3 ">
                 <label for="title" className="form-label">
                   Title
                 </label>
@@ -117,7 +225,20 @@ const onChange = (e)=>{
                   onChange={onChange}
                 />
               </div>
-              
+              {/* Input for file upload */}
+              <div className="mb-3">
+                <label htmlfor="eimage" className="form-label">
+                  Upload Image
+                </label>
+                <input
+                  type="file"
+                  className="form-control"
+                  id="eimage"
+                  name="eimage"
+                  accept="image/*"
+                  onChange={onChange}
+                />
+              </div>
             </form>
             <div className="modal-footer">
               <button
