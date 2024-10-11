@@ -123,7 +123,7 @@ export default function Notes(props) {
             <div className="modal-footer">
               <button
                 type="button"
-                className="btn btn-secondary"
+                className="px-3 py-2 bg-gray-500 text-white rounded-sm cursor-pointer hover:bg-gray-600 transition duration-200"
                 data-dismiss="modal"
                 ref={refCloseConfirm}
               >
@@ -131,7 +131,7 @@ export default function Notes(props) {
               </button>
               <button
                 type="button"
-                className="btn btn-primary"
+                className="px-3 py-2 bg-blue-400 text-white rounded-sm cursor-pointer hover:bg-blue-600 transition duration-200"
                 onClick={() => {
                   // Close Confirmation Modal
                   refCloseConfirm.current.click();
@@ -244,12 +244,12 @@ export default function Notes(props) {
               <button
                 ref={refclose}
                 type="button"
-                className="btn btn-secondary"
+                className="px-3 py-2 bg-gray-500 text-white rounded-sm cursor-pointer hover:bg-gray-600 transition duration-200"
                 data-dismiss="modal"
               >
                 Close
               </button>
-              <button disabled={note.etitle.length<3 || note.edescription.length<5} onClick={handleClick} type="button" className="btn btn-primary">
+              <button disabled={note.etitle.length<3 || note.edescription.length<5} onClick={handleClick} type="button" className="px-3 py-2 bg-blue-400 text-white rounded-sm cursor-pointer hover:bg-blue-600 transition duration-200">
                 Update Note
               </button>
             </div>
