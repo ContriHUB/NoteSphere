@@ -22,7 +22,13 @@ const NotesSchema = new Schema({
     date: {
         type: Date,
         default: Date.now,
-    }
+    },
+    imageData: {
+        type: Buffer, // Stores binary image data
+    },
+    contentType: {
+        type: String, // e.g., 'image/png'
+    },
 
 });
 

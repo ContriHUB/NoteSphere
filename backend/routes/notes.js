@@ -3,7 +3,20 @@ const router = express.Router();
 const fetchuser = require("../middleware/fetchUser");
 const Notes = require("../models/Notes");
 const { body, validationResult } = require("express-validator");
-
+const multer = require('multer'); //for image storage
+// Configure Multer storage (memory storage to get Buffer)
+const storage = multer.memoryStorage();
+const upload = multer({
+    storage: storage,
+    limits: { fileSize: 5 * 1024 * 1024 }, // Limit file size to 5MB
+    fileFilter: (req, file, cb) => {
+        if (!file.mimetype.startsWith('image/')) {
+            cb(new Error('Only image files are allowed!'), false);
+        } else {
+            cb(null, true);
+        }
+    }
+});
 router.get("/fetchallnotes", fetchuser, async (req, res) => {
   try {
     const notes = await Notes.find({ user: req.user.id });
@@ -48,8 +61,8 @@ router.post(
     }
   }
 );
-
-router.put("/updatenote/:id", fetchuser, async (req, res) => {
+// Route: Update an existing note (with optional image)
+router.put("/updatenote/:id", fetchuser,upload.single('image'), async (req, res) => {
   const { title, description, tag } = req.body;
 
   try {
@@ -63,7 +76,11 @@ router.put("/updatenote/:id", fetchuser, async (req, res) => {
     if (tag) {
       newNote.tag = tag;
     }
-
+    // If an image is uploaded, add it to newNote
+    if (req.file) {
+        newNote.imageData = req.file.buffer;
+        newNote.contentType = req.file.mimetype;
+    }
     let note = await Notes.findById(req.params.id);
     if (!note) {
       return res.status(404).send("Not Found!!!");
@@ -81,6 +98,10 @@ router.put("/updatenote/:id", fetchuser, async (req, res) => {
     res.json({ note });
   } catch (error) {
     console.error(error.message);
+    //multer error
+    if (error instanceof multer.MulterError) {
+        return res.status(400).send(error.message);
+    }
     res.status(500).send("Internal server error");
   }
 });
@@ -105,5 +126,25 @@ router.delete("/deletenote/:id", fetchuser, async (req, res) => {
     res.status(500).send("Internal server error");
   }
 });
+// Route to fetch image of a note
+router.get("/fetchimagenote/:id", fetchuser, async (req, res) => {
+    try {
+        const note = await Notes.findById(req.params.id);
+        if (!note || !note.imageData) {
+            return res.status(404).send("Image not found");
+        }
 
+        // Check ownership
+        if (note.user.toString() !== req.user.id) {
+            return res.status(401).send("Not Allowed");
+        }
+
+        res.set('Content-Type', note.contentType);
+        
+        res.send(note.imageData);
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).send("Internal server error");
+    }
+});
 module.exports = router;
