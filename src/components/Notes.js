@@ -101,15 +101,15 @@ export default function Notes(props) {
         aria-labelledby="confirmModalLabel"
         aria-hidden="true"
       >
-        <div className="modal-dialog">
+        <div className="modal-dialog bg-white rounded-lg shadow-lg p-2">
           <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title" id="confirmModalLabel">
+            <div className="modal-header border-b-2 border-blue-400 pb-2">
+              <h5 className="modal-title text-lg font-semibold" id="confirmModalLabel">
                 Confirm Edit
               </h5>
               <button
                 type="button"
-                className="btn"
+                className="btn "
                 data-dismiss="modal"
                 aria-label="Close"
               >
@@ -166,7 +166,7 @@ export default function Notes(props) {
         <div className="modal-dialog">
           <div className="modal-content">
             <div className="modal-header">
-              <h5 className="modal-title" id="exampleModalLabel">
+              <h5 className="modal-title p-1 text-lg  text-gray-700" id="exampleModalLabel">
                 Edit Note
               </h5>
               <button
@@ -179,14 +179,14 @@ export default function Notes(props) {
                 </i> {/*Cross icon */}
               </button>
             </div>
-            <form className="my -3 mx-2" enctype="multipart/form-data">{/*To handle file uploads */}
+            <form className="my-1 mx-4" enctype="multipart/form-data">{/*To handle file uploads */}
               <div className="mb-3 ">
-                <label for="title" className="form-label">
+                <label for="title" className="form-label text-md text-gray-500 mb-1">
                   Title
                 </label>
                 <input
                   type="text"
-                  className="form-control"
+                  className="form-control w-full px-3 py-2 bg-zinc-100 border border-zinc-200 rounded-md mb-2"
                   id="etitle"
                   name="etitle"
                   aria-describedby="emailHelp"
@@ -194,17 +194,17 @@ export default function Notes(props) {
                   required onChange={onChange}
                   minLength={3}
                 />
-                <div id="emailHelp" className="form-text">
+                <div id="emailHelp" className="form-text text-sm text-gray-500">
                   We'll never share your email with anyone else.
                 </div>
               </div>
               <div className="mb-3">
-                <label for="desc" className="form-label">
+                <label for="desc" className="form-label text-md text-gray-500">
                   Description
                 </label>
                 <input
                   type="text"
-                  className="form-control"
+                  className="form-control w-full px-3 py-2 bg-zinc-100 border border-zinc-200 rounded-md mb-2"
                   id="edescription"
                   name="edescription"
                   value={note.edescription}
@@ -213,12 +213,12 @@ export default function Notes(props) {
                 />
               </div>
               <div className="mb-3">
-                <label for="tag" className="form-label">
+                <label for="tag" className="form-label text-md text-gray-500">
                   Tag
                 </label>
                 <input
                   type="text"
-                  className="form-control"
+                  className="form-control w-full px-3 py-2 bg-zinc-100 border border-zinc-200 rounded-md mb-2"
                   id="etag"
                   name="etag"
                   value={note.etag}
@@ -227,12 +227,12 @@ export default function Notes(props) {
               </div>
               {/* Input for file upload */}
               <div className="mb-3">
-                <label htmlfor="eimage" className="form-label">
+                <label htmlfor="eimage" className="form-label text-md text-gray-500">
                   Upload Image
                 </label>
                 <input
                   type="file"
-                  className="form-control"
+                  className="form-control w-full px-3 py-1 bg-zinc-100 border border-zinc-200 rounded-md mb-2"
                   id="eimage"
                   name="eimage"
                   accept="image/*"
