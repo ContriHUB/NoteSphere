@@ -258,7 +258,9 @@ export default function Notes(props) {
       </div>
 
       <div className="row my-3">
-        <h4>Your feedbacks</h4>
+      <h3 className="text-3xl  text-gray-700 text-center my-2 px-3">
+      Your Feedbacks
+      </h3>
         <div className="container mx-2">
         {notes.length===0 && 'No feedbacks yet'}
         </div>
