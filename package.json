@@ -7,6 +7,7 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "bcrypt": "^5.1.1",
+    "browser-image-compression": "^2.0.2",
     "concurrently": "^8.2.0",
     "cors": "^2.8.5",
     "express-validator": "^7.0.1",

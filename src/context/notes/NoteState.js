@@ -26,7 +26,7 @@ const NoteState = (props)=>{
         }
     
         const json = await response.json();
-        console.log(JSON.stringify(json));
+        // console.log(JSON.stringify(json));
         setnotes(json);  // Assuming setNotes is a state setter function
     };
     
@@ -73,36 +73,51 @@ const NoteState = (props)=>{
         setnotes(newNotes);
     }
 
-    const editNote = async (id,title,description,tag)=>{
+    // Edit a note (with optional image upload)
+    const editNote = async (id, title, description, tag, imageFile = null) => {
+        try {
+            let response;
+            if (imageFile) {
+                const formData = new FormData();
+                formData.append('title', title);
+                formData.append('description', description);
+                formData.append('tag', tag);
+                formData.append('image', imageFile); // Append image
 
-        const response = await fetch(`${host}/api/notes/updatenote/${id}`, {
-            cors:{
-                // origin:"https://127.0.0.1:3000",
-                origin: '*',
-                // origin: "http://localhost:5000",
-                credentials: true,
-                methods: ["GET", "POST"],
-            },
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'auth-token': localStorage.getItem('token')
-            },
-            body: JSON.stringify({title,description,tag})
-        });
-        const json = await response .json();
-        let newNotes = JSON.parse(JSON.stringify(notes))
-        for(let index=0;index<newNotes.length;index++){
-            const element = newNotes[index];
-            if(element._id===id){
-                newNotes[index].title=title;
-                newNotes[index].description=description;
-                newNotes[index].tag=tag;
-                break;
+                response = await fetch(`${host}/api/notes/updatenote/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'auth-token': localStorage.getItem('token'),
+                        // Do not set 'Content-Type' when using FormData
+                    },
+                    body: formData,
+                });
+            } else {
+                // If no image, send JSON
+                response = await fetch(`${host}/api/notes/updatenote/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'auth-token': localStorage.getItem('token'),
+                    },
+                    body: JSON.stringify({ title, description, tag }),
+                });
             }
+
+            const updatedNote = await response.json();
+
+            // Update the note in state
+            const newNotes = notes.map((note) => {
+                if (note._id === id) {
+                    return { ...note, title, description, tag };
+                }
+                return note;
+            });
+            setnotes(newNotes);
+        } catch (error) {
+            console.error("Error editing note:", error);
         }
-        setnotes(newNotes);
-    }
+    };
 
     return (
         <NoteContext.Provider value={{notes,addNote,deleteNote,editNote,getNotes}}>
