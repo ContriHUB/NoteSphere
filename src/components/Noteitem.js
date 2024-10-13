@@ -21,7 +21,7 @@ const Noteitem = (props) => {
                     'auth-token': localStorage.getItem('token'),
                 },
             });
-
+      
             if (response.ok) {
                 const blob = await response.blob();
                 const url = URL.createObjectURL(blob);
