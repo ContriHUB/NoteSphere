@@ -1,12 +1,12 @@
 import React from 'react';
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate,useLocation} from "react-router-dom";
 import { useContext } from "react";
 import AuthContext from "../context/AuthContext"; // Ensure correct import path
 
 export const Navbar = () => {
     const { user, logout } = useContext(AuthContext); // Using useContext directly
     const navigate = useNavigate();
-
+    const location = useLocation(); // Get the current route
     const handleLogout = () => {
         logout();
         // Redirect based on user role
@@ -16,7 +16,8 @@ export const Navbar = () => {
             navigate("/login");
         }
     };
-
+    // Check if on admin login or register pages
+    const isAdminPage = location.pathname === "/admin-login" || location.pathname === "/admin-register";
     return (
         <nav className="bg-gray-800 p-3">
             <div className="container mx-auto flex justify-between items-center">
@@ -40,7 +41,7 @@ export const Navbar = () => {
                 </div>
 
                 <div className="ml-auto space-x-2">
-                    {!user ? (
+                    {!user && !isAdminPage ? (
                         <>
                             {/* Regular User Links */}
                             <Link
@@ -61,12 +62,14 @@ export const Navbar = () => {
                     ) : (
                         <>
                             {/* Logout Button */}
+                            {!isAdminPage && (
                             <button
                                 onClick={handleLogout}
                                 className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
                             >
                                 Logout
                             </button>
+                            )}
                         </>
                     )}
                 </div>
