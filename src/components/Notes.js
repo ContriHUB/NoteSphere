@@ -4,16 +4,32 @@ import Noteitem from "./Noteitem";
 import AddNote from "./AddNote";
 import { useNavigate } from "react-router-dom";
 import imageCompression from "browser-image-compression";
+import Alert from "./Alert";
 export default function Notes(props) {
   const context = useContext(noteContext);
   const { notes, getNotes,editNote } = context;
   const navigate = useNavigate();
+  const [alert, setalert] = useState(null);
+
+  const showAlert = (message, type) => {
+    setalert({
+      msg: message,
+      type: type,
+    });
+    setTimeout(() => {
+      setalert(null);
+    }, 1500); // Alert will disappear after 1.5 seconds
+  };
   useEffect(() => {
     if(localStorage.getItem('token')){
       console.log(localStorage.getItem('token'))
       getNotes()
     } else {
-      navigate("/login")
+      showAlert("Access Denied: You must be logged in to view the homepage.", "danger");
+      // Delay navigation for 1.5 seconds (same time as alert disappearance)
+      setTimeout(() => {
+        navigate("/login");
+      }, 1500);
     }
     
   }, []);
@@ -79,6 +95,16 @@ export default function Notes(props) {
       setnote({ ...note, [e.target.name]: e.target.value });
     }
   };
+
+
+  if(alert){
+    return <div>
+    {/* Pass the alert state to your Alert component */}
+    <Alert alert={alert} />
+    
+    {/* Rest of your component */}
+  </div>
+  }
 
   return (
     <>
