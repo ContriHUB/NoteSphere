@@ -15,19 +15,13 @@ router.post('/register', [
     body('name', 'Name must be at least 3 characters').isLength({ min: 3 }),
     body('email', 'Enter a valid email').isEmail(),
     body('password', 'Password must be at least 5 characters').isLength({ min: 5 }),
-], fetchuser, async (req, res) => {
+], async (req, res) => {
     let success = false;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ success, errors: errors.array() });
     }
-    try {
-        // Only existing admins can create new admins
-        const existingAdmin = await User.findById(req.user.id);
-        if (!existingAdmin || !existingAdmin.isAdmin) {
-            return res.status(403).json({ success, error: 'Access denied. Admins only.' });
-        }
-
+    try { 
         let user = await User.findOne({ email: req.body.email });
         if (user) {
             return res.status(400).json({ success, error: 'User already exists' });
