@@ -15,6 +15,8 @@ const port =5000
 
 app.use('/api/auth',require('./routes/auth'))
 app.use('/api/notes',require('./routes/notes'))
+app.use('/api/admin', require('./routes/adminAuth')); // Admin authentication routes
+app.use('/api/admin', require('./routes/adminDashboard')); // Admin dashboard routes
 // Error handling for Multer
 app.use((err, req, res, next) => {
     if (err instanceof multer.MulterError) {

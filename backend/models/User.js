@@ -15,6 +15,10 @@ const UserSchema = new Schema({
         type: String,
         required: true,
     },
+    isAdmin: {
+        type: Boolean,
+        default: false, // Users are not admins by default
+    },
     date: {
         type: Date,
         default: Date.now,
