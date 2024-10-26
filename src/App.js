@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route,Navigate } from "react-router-do
 import { Navbar } from "./components/Navbar";
 import { Home } from "./components/Home";
 import { About } from "./components/About";
+import Vote from "./components/Vote";
 import NoteState from "./context/notes/NoteState";
 import Alert from "./components/Alert";
 import Login from "./components/Login";
@@ -35,6 +36,7 @@ function App() {
           <Routes>
             <Route path="/" element={<ProtectedHome showAlert={showAlert}/>}></Route>
             <Route path="/about" element={<About />}></Route>
+            <Route path="/vote" element={<Vote />} />
             <Route path="/login" element={<Login showAlert={showAlert}/>}></Route>
             <Route path="/signup" element={<Signup showAlert={showAlert}/>}></Route>
             {/* Admin Routes */}

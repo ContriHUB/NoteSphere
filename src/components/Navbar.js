@@ -34,8 +34,8 @@ export const Navbar = () => {
                     <Link className="text-white hover:underline" to="/about">
                         About
                     </Link>
-                    <Link className="text-white hover:underline" to="/announcements">
-                        Announcements
+                    <Link className="text-white hover:underline" to="/vote">
+                        Vote
                     </Link>
                     {user?.isAdmin && (
                         <Link className="text-white hover:underline" to="/admin-dashboard">
