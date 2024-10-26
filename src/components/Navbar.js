@@ -1,23 +1,24 @@
 import React from 'react';
-import { Link, useNavigate,useLocation} from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useContext } from "react";
 import AuthContext from "../context/AuthContext"; // Ensure correct import path
 
 export const Navbar = () => {
-    const { user, logout } = useContext(AuthContext); // Using useContext directly
+    const { user, logout } = useContext(AuthContext);
     const navigate = useNavigate();
-    const location = useLocation(); // Get the current route
+    const location = useLocation();
+    
     const handleLogout = () => {
         logout();
-        // Redirect based on user role
         if (user?.isAdmin) {
             navigate("/admin-login");
         } else {
             navigate("/login");
         }
     };
-    // Check if on admin login or register pages
+
     const isAdminPage = location.pathname === "/admin-login" || location.pathname === "/admin-register";
+
     return (
         <nav className="bg-gray-800 p-3">
             <div className="container mx-auto flex justify-between items-center">
@@ -33,6 +34,9 @@ export const Navbar = () => {
                     <Link className="text-white hover:underline" to="/about">
                         About
                     </Link>
+                    <Link className="text-white hover:underline" to="/announcements">
+                        Announcements
+                    </Link>
                     {user?.isAdmin && (
                         <Link className="text-white hover:underline" to="/admin-dashboard">
                             Dashboard
@@ -43,32 +47,19 @@ export const Navbar = () => {
                 <div className="ml-auto space-x-2">
                     {!user && !isAdminPage ? (
                         <>
-                            {/* Regular User Links */}
-                            <Link
-                                className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
-                                to="/login"
-                                role="button"
-                            >
+                            <Link className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600" to="/login" role="button">
                                 Login
                             </Link>
-                            <Link
-                                className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
-                                to="/signup"
-                                role="button"
-                            >
+                            <Link className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600" to="/signup" role="button">
                                 Signup
                             </Link>
                         </>
                     ) : (
                         <>
-                            {/* Logout Button */}
                             {!isAdminPage && (
-                            <button
-                                onClick={handleLogout}
-                                className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
-                            >
-                                Logout
-                            </button>
+                                <button onClick={handleLogout} className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">
+                                    Logout
+                                </button>
                             )}
                         </>
                     )}
