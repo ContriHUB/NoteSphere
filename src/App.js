@@ -14,6 +14,7 @@ import AdminLogin from './components/AdminLogin';
 import AdminRegister from './components/AdminRegister';
 import AdminDashboard from './components/AdminDashboard';
 import AuthState from "./context/AuthState";
+import Announcements from './components/Announcements';
 function App() {
   const [alert,setalert] = useState(null);
   const showAlert = (message,type)=>{
@@ -42,6 +43,9 @@ function App() {
             <Route path="/admin-login" element={<AdminLogin showAlert={showAlert} />} />
             <Route path="/admin-register" element={<AdminRegister showAlert={showAlert}/>} />
             <Route path="/admin-dashboard" element={<ProtectedAdminDashboard />} />
+
+            <Route path="/announcements" element={<Announcements/>} />
+
           </Routes>
         </div>
 
