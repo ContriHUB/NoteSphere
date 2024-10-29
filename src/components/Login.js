@@ -32,6 +32,7 @@ const Login = ({showAlert}) => {
         console.log(json);
         if(json.success) {
           localStorage.setItem('token',json.authtoken);
+          localStorage.setItem('email',credentials.email);
           showAlert("Account successfully logged in","success");
           navigate("/");
          
