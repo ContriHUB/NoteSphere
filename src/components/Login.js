@@ -2,6 +2,7 @@ import React, { useState,useEffect } from 'react'
 import { useNavigate,useLocation } from 'react-router-dom'
 
 const Login = ({showAlert}) => {
+  //removing props instead showAlert
     const host ="http://localhost:5000";
     const [ credentials,setcredentials ] = useState({email:"",password:""})
     const navigate = useNavigate();

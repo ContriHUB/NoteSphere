@@ -6,16 +6,7 @@ import AuthContext from "../context/AuthContext"; // Ensure correct import path
 export const Navbar = () => {
     const { user, logout } = useContext(AuthContext);
     const navigate = useNavigate();
-    const location = useLocation(); // Get the current route
-    // const handleLogout = () => {
-    //     logout();
-    //     // Redirect based on user role
-    //     if (user?.isAdmin) {
-    //         navigate("/admin-login");
-    //     } else {
-    //         navigate("/login");
-    //     }
-    // };
+    const location = useLocation(); 
     const handleLogout = () => {
         logout(); 
         setTimeout(() => {
