@@ -13,11 +13,10 @@ app.use(cors({
 }));
 const port =5000
 
-app.use('/api/auth',require('./routes/auth'))
-app.use('/api/notes',require('./routes/notes'))
-app.use('/api/admin', require('./routes/adminAuth')); // Admin authentication routes
-app.use('/api/admin', require('./routes/adminDashboard')); // Admin dashboard routes
-app.use('/api/polls', require('./routes/pollRoutes')); 
+const http = require('http'); // Import http module
+const setupSocket = require('./socket/socket'); // Import your socket setup
+const server = http.createServer(app); // Create HTTP server
+
 // Error handling for Multer
 app.use((err, req, res, next) => {
     if (err instanceof multer.MulterError) {
@@ -30,7 +29,22 @@ app.use((err, req, res, next) => {
     next();
 });
 
-// Function to delete expired polls
+// Setup Socket.io with the created server
+const io = setupSocket(server);
+
+// Middleware to attach Socket.io instance to req
+app.use((req, res, next) => {
+    req.io = io; // Attach socket instance to req
+    next();
+});
+
+app.use('/api/auth',require('./routes/auth'))
+app.use('/api/notes',require('./routes/notes'))
+app.use('/api/admin', require('./routes/adminAuth')); // Admin authentication routes
+app.use('/api/admin', require('./routes/adminDashboard')); // Admin dashboard routes
+app.use('/api/announcements', require('./routes/announcements'))
+app.use('/api/polls', require('./routes/pollRoutes')); 
+
 const cleanUpExpiredPolls = async () => {
     try {
         const expiredPolls = await Poll.find({ expiration: { $lt: new Date() } });

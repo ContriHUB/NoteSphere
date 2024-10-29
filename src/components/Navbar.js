@@ -6,13 +6,22 @@ import AuthContext from "../context/AuthContext"; // Ensure correct import path
 export const Navbar = () => {
     const { user, logout } = useContext(AuthContext);
     const navigate = useNavigate();
-    const location = useLocation(); 
+    // const location = useLocation(); 
+    // const handleLogout = () => {
+    //     logout(); 
+    //     setTimeout(() => {
+    //         navigate("/login", { state: { message: "Logged out successfully!" } });
+    //     }, 100);
+    // }
+    const location = useLocation();
     const handleLogout = () => {
-        logout(); 
-        setTimeout(() => {
-            navigate("/login", { state: { message: "Logged out successfully!" } });
-        }, 100);
-    }
+        logout();
+        if (user?.isAdmin) {
+            navigate("/admin-login");
+        } else {
+            navigate("/login");
+        }
+    };
 
     const isAdminPage = location.pathname === "/admin-login" || location.pathname === "/admin-register";
 

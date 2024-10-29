@@ -28,6 +28,7 @@ const PollCreation = ({ isAdmin }) => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ question, options: formattedOptions, timer }),
     });
+    console.log('Response status:', response); // Log the response status
 
     if (response.ok) {
       const result = await response.json();

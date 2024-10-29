@@ -14,6 +14,7 @@ import AdminLogin from './components/AdminLogin';
 import AdminRegister from './components/AdminRegister';
 import AdminDashboard from './components/AdminDashboard';
 import AuthState from "./context/AuthState";
+import Announcements from './components/Announcements';
 function App() {
   const [alert,setalert] = useState(null);
   const showAlert = (message,type)=>{
@@ -26,7 +27,7 @@ function App() {
     },1500);
   }
   const ok=localStorage.getItem("token");
-  console.log(ok);
+  //console.log(ok);
 
   return (
     <NoteState>
@@ -49,6 +50,9 @@ function App() {
             <Route path="/admin-login" element={<AdminLogin showAlert={showAlert} />} />
             <Route path="/admin-register" element={<AdminRegister showAlert={showAlert}/>} />
             <Route path="/admin-dashboard" element={<ProtectedAdminDashboard />} />
+
+            <Route path="/announcements" element={<Announcements/>} />
+
           </Routes>
         </div>
 
@@ -62,7 +66,7 @@ function App() {
 // Protect Home Route: Redirect admins to dashboard
 const ProtectedHome = (props) => {
   const { user } =  useContext(AuthContext);
-  console.log(user);
+  //console.log(user);
   
   if (user?.isAdmin) {
       return <Navigate to="/admin-dashboard" />;
@@ -77,7 +81,7 @@ const ProtectedAdminDashboard = () => {
     return <div>Loading...</div>; //loading component
   }
 
-  console.log(user);
+  //console.log(user);
   
   if (!user?.isAdmin) {
       return <Navigate to="/admin-login" />;
