@@ -98,6 +98,22 @@ router.post('/getuser', fetchuser , async(req,res) => {
         res.status(500).send("Internal server error");
     }
 })
+
+router.post('/getUserByEmail', async (req, res) => {
+    try {
+        const { email } = req.body; // Extract email from request body
+        const user = await User.findOne({ email }); // Search for user by email
+        
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' }); // Handle user not found
+        }
+
+        res.json(user); // Send user object as JSON
+    } catch (error) {
+        console.error(error.message);
+        return res.status(500).send("Internal server error");
+    }
+})
     
 
 
