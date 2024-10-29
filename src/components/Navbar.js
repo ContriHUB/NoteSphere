@@ -7,14 +7,20 @@ export const Navbar = () => {
     const { user, logout } = useContext(AuthContext); // Using useContext directly
     const navigate = useNavigate();
     const location = useLocation(); // Get the current route
+    // const handleLogout = () => {
+    //     logout();
+    //     // Redirect based on user role
+    //     if (user?.isAdmin) {
+    //         navigate("/admin-login");
+    //     } else {
+    //         navigate("/login");
+    //     }
+    // };
     const handleLogout = () => {
-        logout();
-        // Redirect based on user role
-        if (user?.isAdmin) {
-            navigate("/admin-login");
-        } else {
-            navigate("/login");
-        }
+        logout(); 
+        setTimeout(() => {
+            navigate("/login", { state: { message: "Logged out successfully!" } });
+        }, 100);
     };
     // Check if on admin login or register pages
     const isAdminPage = location.pathname === "/admin-login" || location.pathname === "/admin-register";

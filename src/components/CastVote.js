@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 const CastVote = ({ poll }) => {
   const [selectedOption, setSelectedOption] = useState(null);
-
+  const [voteCast, setVoteCast] = useState(false);
   const handleVote = async () => {
     if (selectedOption === null) {
         alert("Please select an option.");
@@ -10,28 +10,35 @@ const CastVote = ({ poll }) => {
     }
 
     try {
-        const response = await fetch(`http://localhost:5000/api/polls/vote/${poll._id}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ optionId: selectedOption }),
-        });
+      const response = await fetch(`http://localhost:5000/api/polls/vote/${poll._id}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ optionId: selectedOption }),
+      });
 
-        const data = await response.json(); 
+      const data = await response.json();
 
-        if (!response.ok) {
-            throw new Error(data.message); 
-        }
+      if (!response.ok) {
+        throw new Error(data.message);
+      }
 
-        console.log('Vote cast successfully:', { success: data.success, message: data.message });
+      console.log('Vote cast successfully:', { success: data.success, message: data.message });
+      setVoteCast(true); // Hide poll after successful vote
     } catch (error) {
-        console.error('Error while voting:', error.message);
-        alert(`Error: ${error.message}`); 
+      console.error('Error while voting:', error.message);
+      alert(`Error: ${error.message}`);
     }
-};
+  };
 
-  
+  if (voteCast) {
+    return (
+      <div className="p-6 bg-white shadow-lg rounded-lg my-4">
+        <p className="text-green-600 font-bold">Thank you for voting!</p>
+      </div>
+    );
+  }
   return (
     <div className="p-6 bg-white shadow-lg rounded-lg my-4">
       <h3 className="text-xl font-bold mb-4">{poll.question}</h3>

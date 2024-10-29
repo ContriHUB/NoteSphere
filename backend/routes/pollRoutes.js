@@ -7,7 +7,7 @@ router.post('/create', async (req, res) => {
     try {
         const { question, options, timer } = req.body;
 
-        const expirationDate = new Date(Date.now() + timer * 1000);
+        const expirationDate = new Date(Date.now() + timer * 3600000);
 
         const newPoll = new Poll({
             question,
