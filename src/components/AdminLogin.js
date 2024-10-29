@@ -16,6 +16,7 @@ const AdminLogin = (props) => {
         const res = await login(form.email, form.password, true); 
         if (res.success) {
             localStorage.setItem('token', res.authtoken);
+            localStorage.setItem('email',form.email)
             props.showAlert("Account successfully logged in", "success");
             navigate('/admin-dashboard');
         } else {

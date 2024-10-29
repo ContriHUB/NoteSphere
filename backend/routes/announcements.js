@@ -4,11 +4,13 @@ const Announcement = require('../models/Announcement');
 const adminAuth = require('../middleware/adminAuth');
 
 // Create an announcement
-router.post('/', adminAuth, async (req, res) => {
+router.post('/', adminAuth,  async (req, res) => {
     const { title, content } = req.body;
     try {
         const announcement = new Announcement({ title, content });
         await announcement.save();
+        console.log("create announcement");
+        
         
         // Emit the new announcement to all connected clients
         req.io.emit('announcement', announcement); // Emit here
