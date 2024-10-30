@@ -1,10 +1,9 @@
-// PollCreation.js
 import React, { useState } from 'react';
 
 const PollCreation = ({ isAdmin }) => {
   const [question, setQuestion] = useState('');
   const [options, setOptions] = useState(['', '']);
-  const [timer, setTimer] = useState(0);
+  const [hours, setHours] = useState(0);
   const [message, setMessage] = useState('');
 
   const handleOptionChange = (index, value) => {
@@ -20,19 +19,23 @@ const PollCreation = ({ isAdmin }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formattedOptions = options.map(option => ({ text: option, votes: 0 }));
-    
+
+    // Convert hours to total seconds
+    const timer = hours * 3600;
+
     const response = await fetch('http://localhost:5000/api/polls/create', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ question, options: formattedOptions, timer }),
     });
+    console.log('Response status:', response); // Log the response status
 
     if (response.ok) {
       const result = await response.json();
       setMessage('Poll created successfully!');
       setQuestion('');
       setOptions(['', '']);
-      setTimer(0);
+      setHours(0);
     } else {
       const error = await response.json();
       setMessage(`Error: ${error.message}`);
@@ -86,14 +89,13 @@ const PollCreation = ({ isAdmin }) => {
           </button>
         </div>
         <div className="flex flex-col">
-          <label className="font-semibold mb-1">Timer (seconds):</label>
+          <label className="font-semibold mb-1">Timer (in hours):</label>
           <input
             type="number"
-            value={timer}
-            onChange={(e) => setTimer(e.target.value)}
-            placeholder="Timer in seconds"
+            value={hours}
+            onChange={(e) => setHours(parseInt(e.target.value))}
+            placeholder="Hours"
             min="0"
-            required
             className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>

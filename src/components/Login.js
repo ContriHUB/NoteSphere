@@ -1,14 +1,22 @@
-import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import React, { useState,useEffect } from 'react'
+import { useNavigate,useLocation } from 'react-router-dom'
 
-const Login = (props) => {
+const Login = ({showAlert}) => {
+  //removing props instead showAlert
     const host ="http://localhost:5000";
     const [ credentials,setcredentials ] = useState({email:"",password:""})
     const navigate = useNavigate();
     const onChange = (e)=>{
         setcredentials({...credentials,[e.target.name]: e.target.value})
     }
-
+    const location = useLocation();
+    const [rendered, setRendered] = useState(false); 
+    useEffect(() => {
+        if (location.state?.message && !rendered) {
+            showAlert(location.state.message, "success"); 
+            setRendered(true); 
+    }}, [location, rendered, showAlert]);
+  
     const handleSubmit=async (e) =>{
         e.preventDefault();
         const response = await fetch(`${host}/api/auth/login`, {
@@ -26,11 +34,11 @@ const Login = (props) => {
         if(json.success) {
           localStorage.setItem('token',json.authtoken);
           localStorage.setItem('email',credentials.email);
-          props.showAlert("Account successfully logged in","success");
+          showAlert("Account successfully logged in","success");
           navigate("/");
          
         } else {
-            props.showAlert("Invalid credentials","danger");
+            showAlert("Invalid credentials","danger");
         }
     }
   return (

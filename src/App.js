@@ -26,6 +26,9 @@ function App() {
       setalert(null);
     },1500);
   }
+  const ok=localStorage.getItem("token");
+  //console.log(ok);
+
   return (
     <NoteState>
       <AuthState>
@@ -35,8 +38,12 @@ function App() {
         <div className="container">
           <Routes>
             <Route path="/" element={<ProtectedHome showAlert={showAlert}/>}></Route>
+            <Route 
+                path="/vote" 
+                element={ok ? <Vote /> : <Navigate to="/" />} 
+              />
             <Route path="/about" element={<About />}></Route>
-            <Route path="/vote" element={<Vote />} />
+            {/* <Route path="/vote" element={<Vote />} /> */}
             <Route path="/login" element={<Login showAlert={showAlert}/>}></Route>
             <Route path="/signup" element={<Signup showAlert={showAlert}/>}></Route>
             {/* Admin Routes */}
@@ -59,7 +66,7 @@ function App() {
 // Protect Home Route: Redirect admins to dashboard
 const ProtectedHome = (props) => {
   const { user } =  useContext(AuthContext);
-  console.log(user);
+  //console.log(user);
   
   if (user?.isAdmin) {
       return <Navigate to="/admin-dashboard" />;
@@ -74,7 +81,7 @@ const ProtectedAdminDashboard = () => {
     return <div>Loading...</div>; //loading component
   }
 
-  console.log(user);
+  //console.log(user);
   
   if (!user?.isAdmin) {
       return <Navigate to="/admin-login" />;

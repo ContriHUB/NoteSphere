@@ -6,8 +6,14 @@ import AuthContext from "../context/AuthContext"; // Ensure correct import path
 export const Navbar = () => {
     const { user, logout } = useContext(AuthContext);
     const navigate = useNavigate();
+    // const location = useLocation(); 
+    // const handleLogout = () => {
+    //     logout(); 
+    //     setTimeout(() => {
+    //         navigate("/login", { state: { message: "Logged out successfully!" } });
+    //     }, 100);
+    // }
     const location = useLocation();
-    
     const handleLogout = () => {
         logout();
         if (user?.isAdmin) {
@@ -33,6 +39,9 @@ export const Navbar = () => {
                     )}
                     <Link className="text-white hover:underline" to="/about">
                         About
+                    </Link>
+                    <Link className="text-white hover:underline" to="/vote">
+                        Vote
                     </Link>
                     <Link className="text-white hover:underline" to="/announcements">
                         Announcements
